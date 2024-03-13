@@ -1,0 +1,10 @@
+sentence-transformers
+langchain
+openai
+opencv-python
+mediapipe
+google-cloud-aiplatform
+pandas
+numpy
+tqdm
+google-cloud-storage
