@@ -10,10 +10,11 @@ services:
         volumes:
             - ../secrets:/secrets
             - ../vec_db:/app
-            - vec-db-storage:/app/metadata
+            - metadata:/app/metadata
         environment:
             GOOGLE_APPLICATION_CREDENTIALS: ../secrets/data-server-account.json
             GCP_PROJECT: "team-birth-2024"
             GCP_ZONE: "us-central1"
 volumes:
-    vec-db-storage:
+    metadata:
+    
