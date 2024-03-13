@@ -68,6 +68,9 @@ ADD --chown=app:app . /app
 # # Set the entrypoint
 # ENTRYPOINT ["/bin/bash"]
 
+# Install the required dependencies
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+
 # # Specify the entrypoint script as the CMD
 # CMD ["entrypoint.sh"]
 # CMD ["-c", "pipenv shell"]
