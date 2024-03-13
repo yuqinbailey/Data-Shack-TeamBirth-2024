@@ -25,9 +25,9 @@ def openai_setup(secret_path: str):
 
 client = storage.Client()
 bucket = client.bucket('data_wa')
-blobs = bucket.list_blobs()
-for b in blobs:
-    print(b.name)
+# blobs = bucket.list_blobs()
+# for b in blobs:
+#     print(b.name)
 
 # embeddings = HuggingFaceInstructEmbeddings()
 # blob_vectordb = bucket.blob("data_wa/vec_db/index.faiss")
@@ -35,9 +35,8 @@ for b in blobs:
 
 for f in ['index.faiss', 'index.pkl']:
     blob = bucket.blob(f'vec_db/{f}')
-    print(blob)
-    blob.download_to_filename(os.path.join('vec_db', f))
-db = FAISS.load_local('vec_db', embeddings=HuggingFaceInstructEmbeddings())
+    blob.download_to_filename(os.path.join('vectorstores/', f))
+db = FAISS.load_local('vectorstores/index.faiss', embeddings=HuggingFaceInstructEmbeddings())
 
 
 retriever=db.as_retriever()
