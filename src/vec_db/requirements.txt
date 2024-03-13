@@ -1,0 +1,10 @@
+langchain==0.1.11
+transformers
+sentence_transformers==2.2.2
+langchain-community==0.0.27
+langchain_experimental==0.0.53
+InstructorEmbedding
+faiss-cpu
+pandas
+google-cloud-storage
+openpyxl
