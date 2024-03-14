@@ -6,12 +6,12 @@ import glob
 import pandas as pd
 from google.cloud import storage
 from langchain_community.document_loaders.csv_loader import CSVLoader
+from langchain_community.vectorstores import FAISS
 # from langchain_text_splitters import CharacterTextSplitter
 from langchain_experimental.text_splitter import SemanticChunker
 # from langchain.embeddings.openai import OpenAIEmbeddings
 # from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.embeddings import HuggingFaceInstructEmbeddings 
-from langchain.vectorstores import FAISS
 
 
 # def openai_setup(secret_path):
@@ -36,24 +36,32 @@ def get_all_files(client, bucket_name):
 def load_file(file, skip_row=True):
     file_name, file_extension = os.path.splitext(file)
     if file_extension.lower() in ['.csv']:
-        shutil.move(f'metadata/raw/{file}', f'metadata/processed/{file}')
-        return
-    df = pd.read_excel(f'metadata/raw/{file}', header=0, engine='openpyxl')
+        if file_name[-9:] == '_feedback':
+            shutil.move(f'metadata/raw/{file}', f'metadata/processed/{file}')
+            return
+        else:
+            df = pd.read_csv(f'metadata/raw/{file}', header=0)        
+    elif file_extension.lower() in ['.xlsx', '.xls']:
+        df = pd.read_excel(f'metadata/raw/{file}', header=0, engine='openpyxl')
+    else:
+        raise ValueError('File extension not supported.')
     if skip_row:
         df.drop(index=0, inplace=True)
-    filtered_df = df[df['Q23'].notnull()].Q23
-    filtered_df.to_csv(f'metadata/processed/{file_name}.csv', index=False, header=False)
+    try:
+        filtered_df = df[df['Q23'].notnull()].Q23
+    except KeyError:
+        raise ValueError('File does not contain the required column Q23.')
+    filtered_df.to_csv(f'metadata/processed/{file_name}_feedback.csv', index=False, header=False)
 
 def create_db(file_name, embedding_function):
     """
     Create a vector database and initialize the embeddings
     """
-    loader = CSVLoader(f'metadata/processed/{file_name}.csv')
+    loader = CSVLoader(f'metadata/processed/{file_name}_feedback.csv')
     documents = loader.load()
     # text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     text_splitter = SemanticChunker(embedding_function)
     docs = text_splitter.split_documents(documents)
-    # print(len(docs))
     db = FAISS.from_documents(docs, embedding_function)
 
     return db
