@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <link rel="stylesheet" href="/static/stylec.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/eso4tvc.css">
+</head>
+<body style="background-color:#f3f3f3">
+    <div class="container-fluid">
+        <div class="row" id="row2">
+            <div class="col-md-2 menu">
+                <a onclick="window.location.href='/{{state}}/{{hospital.url}}'">
+                    <img src="/static/resources/dashbirth_logo.svg" alt="Dashbirth Logo" class="logo">
+                </a>
+                <div class="menu-buttons">
+                    <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}'">Home</button>
+                    <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}/preferences'">Preferences</button>
+                    <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}/trust'">Trust & Decision Making</button>
+                    <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}/experience'">TeamBirth Experience</button>
+                    <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}/demographics'">Demographics</button>
+                    <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}/feedback'">Open Feedback</button>
+                </div>
+            </div>
+            <div class="col-md-10 p-0" style="background-color: #F3F3F3;">
+                <div class="chat-header">
+                    <div class="chat-location">{{hospital.name}}, {{state}}</div>
+                    </div>
+                    <div class="chat-header">
+                    <img src="/static/resources/chatbot2.svg" alt="Chatbot Logo" class="chat-logo">
+                </div>
+                <div id="chat-container">
+                    <div id="conversation"></div>
+                    <div class="input-area">
+                        <input type="text" id="message-input" placeholder="How can I help you today?">
+                        <button type="button" id="send-button" onclick="sendMessage()"><img src="/static/resources/arrow.svg" alt="arrow" class="arrow"></button></div></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/scriptc.js"></script>
+</body>
+</html>
