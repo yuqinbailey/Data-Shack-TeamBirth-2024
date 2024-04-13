@@ -1,0 +1,28 @@
+<!--
+    states: list of available states; has keys 'name' and 'code'
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashbirth</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://use.typekit.net/eso4tvc.css">
+</head>
+<body>
+    <img src="/static/resources/dashbirth_logo.svg" alt="Dashbirth Logo">
+    <h2><span id="rest">Select the </span><span id="state">state</span></h2>
+    <div class="button-container">
+        <!-- loop over states if states is not null -->
+        {% if states %}
+            {% for state in states %}
+                <button class="state-button" onclick="window.location.href='/{{ state.code }}'">{{ state.name }}</button>
+            {% endfor %}
+        {% endif %}
+
+        
+    </div>
+</body>
+</html>
