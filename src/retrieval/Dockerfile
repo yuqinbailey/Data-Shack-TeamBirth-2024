@@ -43,35 +43,10 @@ RUN set -ex; \
 USER app
 WORKDIR /app
 
-# # # Set the working directory to /preprocessing
-# RUN pipenv lock
-
-# # Add the Pipfile, Pipfile.lock, and python code into the container
-# ADD . /
-
-# RUN pipenv sync
-
-# Install python packages
-ADD --chown=app:app Pipfile Pipfile.lock /app/
-
-RUN pipenv sync
-
-# Make the entrypoint.sh script executable
-# RUN chmod +x /bin/bash/entrypoint.sh
-# Add the rest of the source code. This is done last so we don't invalidate all
-# layers when we change a line of code.
 ADD --chown=app:app . /app
-
-# Make the entrypoint.sh script executable
-# RUN chmod +x /bin/bash/entrypoint.sh
-
-# # Set the entrypoint
-# ENTRYPOINT ["/bin/bash"]
 
 # Install the required dependencies
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # # Specify the entrypoint script as the CMD
-# CMD ["entrypoint.sh"]
-# CMD ["-c", "pipenv shell"]
 ENTRYPOINT ["/bin/bash","./entrypoint.sh"]
