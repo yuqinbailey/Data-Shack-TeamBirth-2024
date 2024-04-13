@@ -1,71 +1,67 @@
 import os
-import openai
-import sys
-import json
+import argparse
+import glob
+import shutil
 
-from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain_community.vectorstores import FAISS
-
+from langchain.embeddings import HuggingFaceInstructEmbeddings
 
 from google.cloud import storage
 
 
-
-def openai_setup(secret_path: str):
+def download_db(client, bucket_name, destination_dir):
     """
-    Load OpenAI API key from the secrets file
+    Download files from GCS
     """
-    with open(secret_path) as f:
-        secrets = json.load(f)
-
-    os.environ['OPENAI_API_KEY'] = secrets['OPENAI_API_KEY']
-    openai.api_key = os.environ['OPENAI_API_KEY']
-
-
-
-client = storage.Client()
-bucket = client.bucket('data_wa')
-# blobs = bucket.list_blobs()
-# for b in blobs:
-#     print(b.name)
-
-# embeddings = HuggingFaceInstructEmbeddings()
-# blob_vectordb = bucket.blob("data_wa/vec_db/index.faiss")
-# vectordb = FAISS.load_local(blob_vectordb, embeddings, allow_dangerous_deserialization=True)
-
-for f in ['index.faiss', 'index.pkl']:
-    blob = bucket.blob(f'vec_db/{f}')
-    blob.download_to_filename(os.path.join('vectorstores/', f))
-db = FAISS.load_local('vectorstores/index.faiss', embeddings=HuggingFaceInstructEmbeddings())
+    bucket = client.get_bucket(bucket_name)
+    blobs = bucket.list_blobs()
+    for blob in blobs:
+        filename = os.path.basename(blob.name)
+        local_file_path = os.path.join(destination_dir, filename)
+        blob.download_to_filename(local_file_path)
 
 
-retriever=db.as_retriever()
+def upload_file_to_gcs(bucket_name, file_path, destination_blob_name):
+    """
+    Upload a file to Google Cloud Storage
+    """
+    bucket = client.get_bucket(bucket_name)
 
-openai_setup('../secrets/openai_secret.json')
-
-# loader = CSVLoader(file_path='./teambirth_surveys/Washington.csv')
-# docs = loader.load()
-
-# text_splitter = RecursiveCharacterTextSplitter(
-#     chunk_size = 500,
-#     chunk_overlap = 150,
-#     separators=["\n\n", "\n", "(?<=\. )", " ", ""]
-# )
-
-# splits = text_splitter.split_documents(docs)
-# embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-# vectordb = FAISS.from_documents(documents=splits, embedding=embedding)
-
-#db.save_local("faiss_index")
-#vectordb = FAISS.load_local("faiss_index", embeddings)
+    files = glob.glob(f'{file_path}/*.txt')
+    for file in files:
+        blob = bucket.blob(f'retrieval/{os.path.basename(file)}')
+        blob.upload_from_filename(file)
 
 
+def generate_context(q, out):
+    context = db.similarity_search(q)
 
-if __name__ == "__main__":
+    with open(os.path.join("retrieval_upload/", out), 'w') as f:
+        for item in context:
+            f.write("%s\n" % item.page_content)
+            
+
+if __name__ == "__main__": 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--name', default='data_wa', type=str, help='Name of the GCS bucket')
+    parser.add_argument('-c', '--clean_up', default=True, type=bool, help='Clean up the metadata')
     
-    question = input("Please enter your question: ")
-    docs = retriever.invoke(question)
-    print(docs)  
+    parser.add_argument('-q', '--question', type=str, required=True, help='Question to generate context for')
+    parser.add_argument('-o', '--output_file', type=str, required=True, help='Output file to save context')
+    args = parser.parse_args()
+    
+    client = storage.Client()
+#    bucket = client.bucket('data_wa')
+    bucket_name = args.name
+
+    for f in ['index.faiss', 'index.pkl']:
+        blob = bucket_name.blob(f'vec_db/{f}')
+        blob.download_to_filename(os.path.join('vectorstores/', f))
+    db = FAISS.load_local('vectorstores/', embeddings=HuggingFaceInstructEmbeddings(), allow_dangerous_deserialization=True)
+
+    generate_context(args.question, args.output_file)
+    upload_file_to_gcs(bucket_name, './retrieval_upload', args.output_file)
+
 
 
     
