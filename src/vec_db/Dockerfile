@@ -11,4 +11,5 @@ COPY . /app
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Define the command to run when the container starts
-CMD ["python", "generate_embeddings.py"]
+ENTRYPOINT ["python", "/app/generate_embeddings.py", "--name"]
+CMD ["data_wa"]
