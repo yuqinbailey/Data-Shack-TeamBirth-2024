@@ -51,6 +51,14 @@ html, body, .container-fluid {
   margin-bottom: 10px;
 }
 
+.menu {
+  position: fixed;  
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
 /* Dashboard */
 
 .dashboard {
@@ -68,7 +76,7 @@ html, body, .container-fluid {
 
 .dashboard-title {
   color: #032855;
-  font-family: "Roc Grotesk";
+  font-family: "Roc-Grotesk";
   font-size: 40px;
   font-style: normal;
   font-weight: 400;
@@ -101,10 +109,10 @@ html, body, .container-fluid {
 .dashboard-item {
   background-color: #ffffff;
   border-radius: 5px;
-  display: flex; /* Imposta il display a flex */
-  align-items: center; /* Centra gli elementi verticalmente */
-  justify-content: center; /* Centra gli elementi orizzontalmente */
-  text-align: center; /* Assicurati che il testo sia centrato orizzontalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   height: 100%;
   padding: 20px;
   margin-left: 15px;
@@ -135,7 +143,6 @@ html, body, .container-fluid {
   border-radius: 5px;
   height: 100%;
   text-align: center;
-  padding: 20px;
   margin-left: 15px;
 }
 
@@ -144,14 +151,15 @@ html, body, .container-fluid {
   border-radius: 5px;
   height: 100%;
   text-align: center;
-  padding: 20px;
   margin-right: 15px;
 }
+
+/* Text in the dashboard */
 
 .dashboard-number {
   color: #01224D;
   text-align: right;
-  font-family: "Roc Grotesk";
+  font-family: "Roc-Grotesk";
   font-size: 110px;
   font-style: normal;
   font-weight: 500;
@@ -165,7 +173,7 @@ html, body, .container-fluid {
 .dashboard-text {
   color: #01224D;
   text-align: right;
-  font-family: "Roc Grotesk";
+  font-family: "Roc-Grotesk";
   font-size: 30px;
   font-style: normal;
   font-weight: 400;
@@ -178,7 +186,7 @@ html, body, .container-fluid {
 
 .dashboard-subtext {
   color: #01224D;
-  font-family: "Roc Grotesk";
+  font-family: "Roc-Grotesk";
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
@@ -186,44 +194,53 @@ html, body, .container-fluid {
 }
 
 #date{
-  font-family: "Roc Grotesk";
+  font-family: "Roc-Grotesk";
   font-size: 40px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
 }
 
-.area {
-  fill: #B6D2D0;
-}
-
-.axis path,
-.axis line {
-  display: none;
-}
-
-.x-axis text {
-  fill: #000;
-  font-size: 12px;
-  text-anchor: middle;
-}
-
 .chart-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
   color: #01224D;
-  font-family: "Roc Grotesk";
+  font-family: "Interstate";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
+  padding-top: 20px;
 }
 
-.menu {
-  position: fixed;  
-  left: 0;
-  top: 0;
-  height: 100%;
-  overflow-y: auto;
+.legend{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.cir1{
+  width: 20px;
+  height: 20px;
+  background-color: #FF6C00;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.cir2{
+  width: 20px;
+  height: 20px;
+  background-color: #01224D;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.legend-text{
+  font-family: "Roc-Grotesk";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }

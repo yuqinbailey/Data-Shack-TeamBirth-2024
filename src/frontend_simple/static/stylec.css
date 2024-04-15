@@ -80,7 +80,7 @@ body{
 }
 
 #conversation {
-    height: 400px;
+    height: 450px;
     border: none;
     overflow-y: auto;
     max-height: 400px; /* space max for the conversation, not in percentage otherwise it doesnt work */
@@ -101,7 +101,7 @@ body{
 
 .input-area {
     display: flex;
-    bottom: 5%;
+    bottom: 2%;
     border: none;
     margin: 20px;
     background-color: white;

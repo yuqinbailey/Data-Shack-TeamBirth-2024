@@ -17,16 +17,7 @@ function sendMessage() {
     var chatLogo = document.querySelector(".chat-logo");
 
     // Hiding chatbot logo when chat starts
-    //if (chatLogo && message.trim() !== "") {chatLogo.style.display = "none";}
-
-    // Check if the message is empty
-    // if (message.trim() === "") {
-        // If there are no messages, hide #conversation
-    //    if (conversationDiv.childNodes.length === 0) {conversationDiv.style.display = "none";}
-    //    return;
-    //} else {
-        // If there are messages, show #conversation
-    //    conversationDiv.style.display = "block";}
+    if (chatLogo && message.trim() !== "") {chatLogo.style.display = "none";}
 
     // Display user message in the conversation
     appendMessage("User: " + message);

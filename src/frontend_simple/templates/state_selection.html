@@ -16,13 +16,7 @@
     <h2><span id="rest">Select the </span><span id="state">state</span></h2>
     <div class="button-container">
         <!-- loop over states if states is not null -->
-        {% if states %}
-            {% for state in states %}
-                <button class="state-button" onclick="window.location.href='/{{ state.code }}'">{{ state.name }}</button>
-            {% endfor %}
-        {% endif %}
-
-        
+                <button class="state-button" onclick="window.location.href='hospital_selection.html'">WASHINGTON</button>        
     </div>
 </body>
 </html>
