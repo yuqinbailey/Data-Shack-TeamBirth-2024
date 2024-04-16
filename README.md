@@ -13,6 +13,17 @@ This project proposes to utilize advanced language models to analyze postpartum 
 ## Proposed Solution
 An interactive dashboard website that TeamBirth can use in order to visualize the data and share it to the hospitals.
 
+### Frontend Simple Container
+* Build & run container
+```
+cd src/frontend_simple
+
+docker build -t frontend_simple -f Dockerfile .
+docker run -d -p 5001:5000 -v </absolute/path/to/host/data>:/data frontend_simple
+```
+- Go to page `http://localhost:5001/`
+
+
 <img src="images/Technical_Arch.jpg"  width="800">
 
 ### Vector Database Container
@@ -24,3 +35,10 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
 ### API Service Container
 
 ### Frontend Container
+
+## Docker Cleanup
+Make sure we do not have any running containers and clear up an unused images.
+* Run `docker container ls`
+* Stop any container that is running
+* Run `docker system prune`
+* Run `docker image ls`
