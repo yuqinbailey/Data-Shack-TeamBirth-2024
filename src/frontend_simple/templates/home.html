@@ -1,10 +1,20 @@
+<!--
+    state: current state (code only e.g. CA, TX, etc.)
+    hospital: current hospital (formatted with name, url)
+    start_date: first date from the surveys
+    end_date: last date from the surveys
+    survey_total: total number of surveys
+    survey_trend: survey count trend by month
+    huddle_sumup: huddle sumup data ("Huddle Yes", "Huddle No")
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DashBirth</title>
-    <link rel="stylesheet" href="/static/styleh.css">
+    <link rel="stylesheet" href="../static/styleh.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.typekit.net/eso4tvc.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -13,7 +23,7 @@
     <div class="container-fluid">
         <div class="row" id="pages">
             <div class="col-md-2 menu">
-                <img src="/static/resources/dashbirth_logo.svg" alt="Dashbirth Logo" class="logo">
+                <img src="../static/resources/dashbirth_logo.svg" alt="Dashbirth Logo" class="logo">
                 <div class="menu-buttons">
                     <button class="btn-menu-selected" onclick="window.location.href='/{{state}}/{{hospital.url}}'">Home</button>
                     <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}/preferences'">Preferences</button>
@@ -27,7 +37,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="dashboard-header">
-                                <h1 class="dashboard-title">Providence St Peter, Washington</h1>
+                                <h1 class="dashboard-title">{{hospital.name}}, {{state}}</h1>
                             <button class="btn-change-hospital" onclick="window.location.href='/'">CHANGE HOSPITAL</button>
                         </div>
                     </div>
@@ -35,18 +45,18 @@
                 <div class="row">
                     <div class="col-md-4 line1">
                         <div class="dashboard-item">
-                            <p><span class="dashboard-number">153</span><span class="dashboard-text"><br>surveys</span></p>
+                            <p><span class="dashboard-number">{{survey_total}}</span><span class="dashboard-text"><br>surveys</span></p>
                         </div>
                     </div>
                     <div class="col-md-4 line1">
                         <div class="dashboard-item2">
-                            <p class="dashboard-subtext"><span id="date">01/12/2022</span><br><span id="text">Starting date</span></p>
-                            <p class="dashboard-subtext"><span id="date">06/25/2022</span><br><span id="text">Ending date</span></p>
+                            <p class="dashboard-subtext"><span id="date">{{start_date}}</span><br><span id="text">Starting date</span></p>
+                            <p class="dashboard-subtext"><span id="date">{{end_date}}</span><br><span id="text">Ending date</span></p>
                         </div>
                     </div>
                     <div class="col-md-4 line1">
-                        <div class="dashboard-item3" onclick="window.location.href='sections/chatbot.html'">
-                            <img src="/static/resources/chatbot.svg" alt="Chatbot">
+                        <div class="dashboard-item3" onclick="window.location.href='/{{state}}/{{hospital.url}}/chatbot'">
+                            <img src="../static/resources/chatbot.svg" alt="Chatbot">
                           </div>
                     </div>
                 </div>
@@ -61,7 +71,7 @@
                         <div class="dashboard-item5">
                             <p class="chart-title">HUDDLE SUMUP</p>
                             <div class="chart2"></div>
-                            <!--<div class="legend"><circle class="cir1"></circle><p class="legend-text">Huddle Yes</p><circle class="cir2"></circle><p class="legend-text">Huddle No</p></div>-->
+                            <div class="legend"><circle class="cir1"></circle><p class="legend-text">Huddle Yes</p><circle class="cir2"></circle><p class="legend-text2">Huddle No</p></div>
                         </div>
                     </div>
                 </div>
@@ -69,10 +79,10 @@
         </div>
     </div>
     <script>
-        var survey_count_data = {"2022/01": 17, "2022/02": 23, "2022/03": 12,"2022/04": 35, "2022/05": 30, "2022/06": 25};
-        var huddle_sumup_data = {"Huddle Yes": 90, "Huddle No": 10};
+        var huddle_sumup_data = {{ huddle_sumup | tojson | safe }};
+        var survey_count_data = {{ survey_trend | tojson | safe }};
     </script>
-    <script src="/static/sketch1.js"></script>
-    <script src="/static/sketch2.js"></script>
+    <script src="../../static/sketch1.js"></script>
+    <script src="../../static/sketch2.js"></script>
 </body>
 </html>

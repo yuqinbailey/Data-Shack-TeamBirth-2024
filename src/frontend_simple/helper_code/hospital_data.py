@@ -51,8 +51,24 @@ class HospitalData:
         """
         Returns the number of surveys for each year-month.
         """
-        year_month = self.df['Year-Month'].value_counts().sort_index()
-        return year_month.to_dict()
+        start_date = self.df["Year-Month"].min()
+        start_year = start_date[:4]
+        start_month = start_date[5:]
+        end_date = self.df["Year-Month"].max()
+        end_year = end_date[:4]
+        end_month = end_date[5:]
+
+        year_month = {}
+
+        for y in range(int(start_year), int(end_year)+1):
+            for m in range(1, 13):
+                if y == int(start_year) and m < int(start_month):
+                    continue
+                if y == int(end_year) and m > int(end_month):
+                    break
+                year_month[f"{y}-{m:02d}"] = len(self.df[self.df["Year-Month"] == f"{y}-{m:02d}"])
+
+        return year_month
     
     def start_date(self):
         """

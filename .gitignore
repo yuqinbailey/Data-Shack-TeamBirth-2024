@@ -1,11 +1,17 @@
 **/secrets/
 **/data/
 **/metadata/
+**/index.*
+**/chroma/
 *.xlsx
 *.xls
 *.csv
 *.json
 *.DS_Store
+**/test.*
+/TestData/
+**/old/
+# src/frontend_simple/helper_code/chatbot.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

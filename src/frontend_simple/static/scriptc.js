@@ -18,12 +18,26 @@ function sendMessage() {
 
     // Hiding chatbot logo when chat starts
     if (chatLogo && message.trim() !== "") {chatLogo.style.display = "none";}
+    
+    // Check if the message is empty; if it's empty, don't send it
+    if (message.trim() === "") {
+        return;
+    }
+
+    // Check if the message is empty
+    // if (message.trim() === "") {
+        // If there are no messages, hide #conversation
+    //    if (conversationDiv.childNodes.length === 0) {conversationDiv.style.display = "none";}
+    //    return;
+    //} else {
+        // If there are messages, show #conversation
+    //    conversationDiv.style.display = "block";}
 
     // Display user message in the conversation
     appendMessage("User: " + message);
 
     // Use fetch to send data to Flask backend
-    fetch('/{{state}}/{{hospital.url}}/chatbot/response', {
+    fetch(`/${state_code}/${hospital_url}/chatbot/response`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
