@@ -1,13 +1,8 @@
-import os
-from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
-from werkzeug.utils import secure_filename
-import pandas as pd
-import numpy as np
+from flask import Flask, request, redirect, url_for, render_template, jsonify
 import helper_code.hospital_data as data
 from helper_code.hospital_data import HospitalData
 import helper_code.data_loader as dl
-import helper_code.chatbot as chatbot
-import json, re
+# import helper_code.chatbot as chatbot
 
 app = Flask(__name__)
 
@@ -60,29 +55,21 @@ def dashboard_home(state, hospital):
 
 #region CHATBOT
 
-@app.route('/<state>/<hospital>/chatbot/')
-def chatbot_page(state, hospital):
-    if not dl.valid_state(state):
-        return redirect(url_for('index'))
-    if not dl.valid_hospital(state, hospital):
-        return redirect(url_for('select_hospital', state=state))
-    return render_template(CHATBOT_PAGE, state=state, 
-                           hospital=dl.get_formatted_hospital(state, hospital))
+# @app.route('/<state>/<hospital>/chatbot/')
+# def chatbot_page(state, hospital):
+#     if not dl.valid_state(state):
+#         return redirect(url_for('index'))
+#     if not dl.valid_hospital(state, hospital):
+#         return redirect(url_for('select_hospital', state=state))
+#     return render_template(CHATBOT_PAGE, state=state, 
+#                            hospital=dl.get_formatted_hospital(state, hospital))
 
-@app.route('/<state>/<hospital>/chatbot/response', methods=['POST'])
-def chatbot_response(state, hospital):
-    if not dl.valid_state(state) or not dl.valid_hospital(state, hospital):
-        return jsonify({"response": f"Invalid state or hospital: {state}, {hospital}"})
+# @app.route('/<state>/<hospital>/chatbot/response', methods=['POST'])
+# def chatbot_response(state, hospital):
+#     if not dl.valid_state(state) or not dl.valid_hospital(state, hospital):
+#         return jsonify({"response": f"Invalid state or hospital: {state}, {hospital}"})
 
-    print("Chatbot response request received")
-    return jsonify({"response": "Sample chatbot response (not wasting tokens)"})
-
-    data = request.json
-    user_message = data.get('message', '')
-
-    # Simulate a chatbot response (convert the message to uppercase)
-    response = chatbot.get_chatbot_response(user_message)
-    
-    return jsonify({"response": response})
+#     print("Chatbot response request received")
+#     return jsonify({"response": "Sample chatbot response (not wasting tokens)"})
 
 #endregion
