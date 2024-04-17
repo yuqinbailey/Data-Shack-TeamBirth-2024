@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, url_for, render_template, jsonify
-import helper_code.hospital_data as data
 from helper_code.hospital_data import HospitalData
 import helper_code.data_loader as dl
+# import helper_code.hospital_data as data
 # import helper_code.chatbot as chatbot
 
 app = Flask(__name__)
@@ -70,6 +70,14 @@ def dashboard_home(state, hospital):
 #         return jsonify({"response": f"Invalid state or hospital: {state}, {hospital}"})
 
 #     print("Chatbot response request received")
-#     return jsonify({"response": "Sample chatbot response (not wasting tokens)"})
+#     # return jsonify({"response": "Sample chatbot response (not wasting tokens)"})
+
+#     data = request.json
+#     user_message = data.get('message', '')
+
+#     # Simulate a chatbot response (convert the message to uppercase)
+#     response = chatbot.get_chatbot_response(user_message)
+    
+#     return jsonify({"response": response})
 
 #endregion
