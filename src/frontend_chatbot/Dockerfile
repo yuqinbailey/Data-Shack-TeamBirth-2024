@@ -11,7 +11,7 @@ COPY ./static /usr/share/nginx/html/static
 COPY ./templates /usr/share/nginx/html
 
 # Copy the custom Nginx config
-COPY nginx.config /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
 EXPOSE 80
