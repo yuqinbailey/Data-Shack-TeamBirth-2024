@@ -1,0 +1,141 @@
+body{
+    color: #f3f3f3;
+}
+
+.menu {
+    position: fixed;  
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 20%;
+    height: 100%;
+    background-color: #ffffff;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.logo {
+    width: 80%;
+    margin: 10%;
+    margin-top: 20%;
+    margin-bottom: 20%;
+}
+
+.menu-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-menu {
+    width: 90%;
+    background-color: white;
+    color: #01224D;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    font-family: 'interstate', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    cursor: pointer;
+}
+
+#row2{
+    height: 100vh;
+    text-align: center;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background-color: #F3F3F3;
+    justify-content: center;
+}
+
+.chat-location{
+    color: #032855;
+    font-family: "Roc-Grotesk";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 20px;
+    text-align: center;
+}
+
+#chat-container {
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+    overflow: hidden;
+    z-index: 1000;
+    background-color: #F3F3F3;
+    border: none;
+    display: flex;
+    flex-direction: column;
+}
+
+#conversation {
+    height: 450px;
+    border: none;
+    overflow-y: auto;
+    max-height: 400px; /* space max for the conversation, not in percentage otherwise it doesnt work */
+    width: 80%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+
+#conversation div {
+    color: #032855;
+    font-family: 'interstate', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-align: left;
+    margin-bottom: 10px; /* space between messages */
+}
+
+.input-area {
+    display: flex;
+    bottom: 2%;
+    border: none;
+    margin: 20px;
+    background-color: white;
+    border-radius: 20px;
+    width: 70%;
+    position: fixed;
+}
+
+#message-input {
+    color: #032855;
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    font-family: 'interstate', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    border: none;
+    outline: none;
+}
+
+#send-button {
+    margin: 10px;
+    border-radius: 20px;
+    border: none;
+    background-color: #FF6C00;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.arrow{
+    width: 80%;
+}

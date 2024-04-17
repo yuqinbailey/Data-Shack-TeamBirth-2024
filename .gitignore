@@ -11,7 +11,7 @@
 **/test.*
 /TestData/
 **/old/
-# src/frontend_simple/helper_code/chatbot.py
+src/frontend_simple/helper_code/chatbot.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

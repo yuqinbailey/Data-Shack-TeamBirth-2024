@@ -1,0 +1,260 @@
+html, body, .container-fluid {
+  height: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#pages{
+  height: 100vh;
+}
+
+/* Left menu */
+
+.menu-buttons {
+  background-color: #ffffff;
+  font-family: 'interstate', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.logo {
+  width: 80%;
+  margin: 10%;
+  margin-top: 20%;
+  margin-bottom: 20%;
+}
+
+.btn-menu-selected {
+  width: 90%;
+  background-color: #f3f3f3;
+  color: #01224D;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.btn-menu {
+  width: 90%;
+  background-color: white;
+  color: #01224D;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.menu {
+  position: fixed;  
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Dashboard */
+
+.dashboard {
+  background-color: #f3f3f3;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+.dashboard-title {
+  color: #032855;
+  font-family: "Roc-Grotesk";
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.btn-change-hospital {
+  border-radius: 5px;
+  background: #01224D;
+  color: white;
+  width: 266px;
+  height: 46px;
+  flex-shrink: 0;
+  font-family: 'interstate', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  border: 0;
+}
+
+/* Row 2&3 */
+
+.line1, .line2{
+  padding: 15px;
+}
+
+.line2{
+  margin-bottom: 30px;
+}
+
+.dashboard-item {
+  background-color: #ffffff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 20px;
+  margin-left: 15px;
+}
+
+.dashboard-item2 {
+  background-color: #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.dashboard-item3 {
+  background-color: #FF6C00;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+  margin-right: 15px;
+}
+
+.dashboard-item4 {
+  background-color: #ffffff;
+  border-radius: 5px;
+  height: 100%;
+  text-align: center;
+  margin-left: 15px;
+}
+
+.dashboard-item5 {
+  background-color: #ffffff;
+  border-radius: 5px;
+  height: 100%;
+  text-align: center;
+  margin-right: 15px;
+}
+
+/* Text in the dashboard */
+
+.dashboard-number {
+  color: #01224D;
+  text-align: right;
+  font-family: "Roc-Grotesk";
+  font-size: 110px;
+  font-style: normal;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  text-align: center;
+  line-height: 1;
+}
+
+.dashboard-text {
+  color: #01224D;
+  text-align: right;
+  font-family: "Roc-Grotesk";
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  line-height: 1;
+}
+
+.dashboard-subtext {
+  color: #01224D;
+  font-family: "Roc-Grotesk";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#date{
+  font-family: "Roc-Grotesk";
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #01224D;
+  font-family: "Interstate";
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding-top: 20px;
+}
+
+/* Legend for the graph2 */
+
+.legend{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.cir1{
+  width: 20px;
+  height: 20px;
+  background-color: #B6D2D0;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.cir2{
+  width: 20px;
+  height: 20px;
+  background-color: #4E7286;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.legend-text{
+  font-family: "Roc-Grotesk";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.legend-text2{
+  font-family: "Roc-Grotesk";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+}
