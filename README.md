@@ -23,7 +23,7 @@ It is highly suggested to store any patient-related data in a dedicated folder o
 **Setup Instructions**
 1. Ensure you have Docker installed on your system.
 2. Have your data stored securely as suggested, outside of your project’s Git repository.
-3. Follow the instructions in our [Frontend Simple Container Setup]((#frontend-simple-container)) to deploy locally.
+3. Follow the instructions in our [Frontend Simple Container Setup](#frontend-simple-container) to deploy locally.
 
 ### Advanced Deployment with Google Cloud Platform
 For enhanced security and control, we recommend deploying our solution using the Google Cloud Platform (GCP). This approach utilizes Google Cloud's robust security measures, including isolated storage and controlled access.
