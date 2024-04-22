@@ -1,9 +1,6 @@
 import os
 from google.cloud import storage
 from fastapi import FastAPI, HTTPException
-# from langchain_community.embeddings import HuggingFaceInstructEmbeddings
-# from langchain_community.vectorstores import FAISS
-
 from langchain_community.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 
@@ -48,8 +45,7 @@ if not os.path.exists('vector_db_loaded'):
 for f in ['index.faiss', 'index.pkl']:
     blob = bucket.blob(f'vec_db/{f}')
     blob.download_to_filename(os.path.join('vector_db_loaded', f))
-embeddings = HuggingFaceInstructEmbeddings()
-db = FAISS.load_local('vector_db_loaded', embeddings=HuggingFaceInstructEmbeddings())
+db = FAISS.load_local('vector_db_loaded', embeddings=HuggingFaceInstructEmbeddings(), allow_dangerous_deserialization=True)
 
 def generate_answer(q):
     context = db.similarity_search(q)
@@ -63,21 +59,4 @@ def generate_answer(q):
     answer = result[0]['generated_text'][len(prompt):].strip()
     return answer
 
-generate_answer("Tell me something!")
-
-# # Init FastAPI
-# app = FastAPI()
-
-# @app.get("/")
-# def read_root():
-#     return {"status": "LLM Service Running"}
-
-# class QuestionPayload(BaseModel):
-#     question: str
-
-# @app.post("/generate")
-# def generate_response(query: QuestionPayload):
-#     try:
-#         return generate_answer(query.question)
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+print(generate_answer("Tell me something about the machine learning!"))
