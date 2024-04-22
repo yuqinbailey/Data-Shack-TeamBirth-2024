@@ -59,6 +59,18 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
 ### Retrival Container
 
 ### Large Language Model Container
+This container serves a Large language model (LLM) on GCP VM. We choose a 
+
+
+
+
+
+
+
+
+
+
+
 
 ### API Service Container
 

@@ -21,3 +21,4 @@ torch
 tqdm
 rich
 Xformers
+faiss-gpu
