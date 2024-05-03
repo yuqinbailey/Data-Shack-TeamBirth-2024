@@ -1,3 +1,15 @@
+"""
+
+This file contains constants and helper methods for the handling of multiple choice questions.
+ANSWER_LISTS contains the standard lists of answers for multiple choice questions, so that when
+the answers to a question is returned, the answers can be ordered in a standard way instead
+of alphabetically and options that are not present can be filled in with 0 value.
+
+Additional methods are present in order to compare two questions and see if they have the same
+answer list, which is needed for the overview of the questions in a section (not implemented yet).
+
+"""
+
 
 ANSWER_LISTS = [
     ["Completely Agree", "Strongly Agree", "Somewhat Agree", "Somewhat Disagree", 
@@ -22,10 +34,12 @@ ANSWER_LISTS = [
 
 def get_all_standard_lists(unique_answers):
     """
+    unique_answers: unique answers to a question; possibly incomplete part of a complete list.
     Returns the complete list of answers that contains all the unique answers.
     If the unique answers are not part of any complete list, returns None.
     If the unique answers are part of multiple complete lists, returns all of them.
     """
+    unique_answers = [str(a) for a in unique_answers]
     unique_answers = [a.lower() for a in unique_answers]
     lists = []
     for answer_list in ANSWER_LISTS:
@@ -36,6 +50,7 @@ def get_all_standard_lists(unique_answers):
 
 def get_standard_list(unique_answers):
     """
+    unique_answers: unique answers to a question; possibly incomplete part of a complete list.
     Returns the complete list of answers that contains all the unique answers.
     If the unique answers are not part of any complete list, returns None.
     If the unique answers are part of multiple complete lists, returns the first one.
@@ -46,10 +61,15 @@ def get_standard_list(unique_answers):
     return lists[0]
 
 def is_standard_multiple_choice(unique_answers):
+    """
+    unique_answers: unique answers to a question; possibly incomplete part of a complete list.
+    Returns True if the unique answers correspond to a standard multiple choice list.
+    """
     return len(get_all_standard_lists(unique_answers)) > 0
 
 def same_standard_answer_list(answer_list1, answer_list2):
     """
+    answer_list1, answer_list2: lists of answers to a question.
     Returns True if the two lists of answes correspond to the same standard list.
     If the lists are not standard, returns False.
     If the lists are standard but different, returns False.

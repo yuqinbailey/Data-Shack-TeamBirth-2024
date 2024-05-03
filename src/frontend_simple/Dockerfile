@@ -8,6 +8,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install any needed packages specified in requirements.txt
+RUN apt-get update && apt-get install -y \
+    build-essential 
+    # python3-dev && \
+    # pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install the spaCy English model
