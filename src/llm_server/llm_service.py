@@ -4,8 +4,6 @@ from fastapi import FastAPI, HTTPException
 from langchain_community.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 
-from peft import PeftModel
-from pydantic import BaseModel
 import torch
 from transformers import AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer, pipeline
 

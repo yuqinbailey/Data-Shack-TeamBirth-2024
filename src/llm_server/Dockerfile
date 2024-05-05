@@ -2,7 +2,6 @@
 # bitsandbytes requires CUDA
 FROM nvidia/cuda:11.3.1-base-ubuntu20.04
 
-
 # Set the working directory in the container
 WORKDIR /app
 
