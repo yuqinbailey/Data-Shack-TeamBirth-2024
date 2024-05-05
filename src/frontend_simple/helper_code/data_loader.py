@@ -1,3 +1,31 @@
+"""
+This file contains utility functions for loading, updating and managing the data and its 
+configuration for each state.
+"TODO" comments indicate where the code needs to be updated with proper data loading for deployment.
+Currently this works for local deployment reading files from a specified directory.
+
+This file contains functions to:
+- load and update data
+- return dataframes and configurations for a given state code and hospital
+- perform validity checks on state code and hospital name - state code pairs
+- get lists of states and hospitals
+- format hospitals with names and urls
+- separate the data from the configuration in the loaded files
+- return warnings for the user if there are any issues with the data files
+
+The "url" of a hospital is the lowercase name with no spaces and no non-alphanumeric characters.
+E.g. "All Hospitals" -> "allhospitals", "Providence St. Peter" -> "providencestpeter".
+The assumption is that this url is unique for each hospital in a state.
+
+For each state, one file is expected containing the configuration in the first three header rows
+and the data in the following rows. The configuration is loaded into a dataframe with columns
+"ID", "Text", and "Category". The data is loaded into a dataframe with the first three header rows
+dropped. 
+
+Both data and configuration are managed as pandas dataframes.
+
+"""
+
 import pandas as pd
 import numpy as np
 import re
@@ -8,9 +36,7 @@ import os
 
 #region CONSTANTS
 
-# DATA_PATH_REL = "../../../Data/"
-# DATA_PATH = os.path.join(os.path.dirname(__file__), DATA_PATH_REL)
-DATA_PATH = "/data/"
+DATA_PATH = os.getenv('DATA_DIR')
 
 STATE_CODES = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", 
                "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", 
@@ -33,49 +59,80 @@ CODE_STATE_DICT = {"AL": "ALABAMA", "AK": "ALASKA", "AZ": "ARIZONA", "AR": "ARKA
                    "VA": "VIRGINIA", "WA": "WASHINGTON", "WV": "WEST VIRGINIA",
                    "WI": "WISCONSIN", "WY": "WYOMING"}
 
-def valid_state(state):
-    return state in STATE_CODES
+#endregion
+
+# Dictionaries to store the dataframes and configurations for each state
+STATE_DF_DICT = {}
+STATE_CONFIG_DICT = {}
+VALID_STATES = set()
+WARNINGS = []
+
+#region WARNINGS
+
+def get_warnings():
+    """ 
+    Returns a list of warnings for the user.
+    """
+    update_warnings()
+    return WARNINGS
+
+#TODO: Update this with proper data loading for deployment
+def update_warnings():
+    """
+    Updates the warnings:
+    - checks for unrecognised state codes in the data files
+    - checks for invalid file extensions in the data files (only .xlsx files are allowed)
+    """
+    WARNINGS.clear()
+    filenames = os.listdir(DATA_PATH)
+
+    for filename in filenames:
+        split_filename = filename.split(".")
+        if len(split_filename) != 2:
+            WARNINGS.append(f"Invalid file format: {filename}.")
+        else:    
+            name = filename.split(".")[0]
+            extension = filename.split(".")[1]
+
+            if name not in STATE_CODES:
+                WARNINGS.append(f"Unrecognised state code in file: {filename}.")
+            if extension != "xlsx":
+                WARNINGS.append(f"Invalid file extension in file: {filename}.")
 
 #endregion
 
-STATE_DF_DICT = {}
-STATE_CONFIG_DICT = {}
-
 #region DATA LOADING + UPDATING
 
-#TODO: Update this with proper data loading
-def load_state_df(state_code):
+#TODO: Update this with proper data loading for deployment
+def _load_state_data(state_code):
     """
-    Loads the dataframe for a given state code and returns it
+    state_code: string
+    Loads the dataframe and configuration for a given state.
+    Returns True if the data was loaded successfully, False otherwise.
+    The file must be in the format "state_code.xlsx" and located in the DATA_PATH.
     """
     if state_code not in STATE_CODES:
-        return None
+        return False
     
-    path = DATA_PATH + state_code + ".csv"
-    if os.path.isfile(path):
-        df = pd.read_csv(path, sep=";", header=[0, 1, 2])
-        # drop header rows 1 and 2
-        df = df.droplevel([1,2], axis=1)
-        return preprocess(df)
-    else:
-        return None
+    path = DATA_PATH + state_code + ".xlsx"
 
-def load_config(state_code):
-    """
-    Loads the configuration for a given state code and returns it
-    """
-    if state_code not in STATE_CODES:
-        return None
-    path = DATA_PATH + state_code + ".csv"
-    if not os.path.isfile(path):
-        return None
-    
-    df = pd.read_csv(path, sep=";", header=[0, 1, 2])
-    config = pd.DataFrame(df.columns.tolist(), columns=["ID", "Text", "Type"])
-    return config
+    if os.path.isfile(path):
+        # load df
+        data = pd.read_excel(path, header=[0, 1, 2])
+        # drop header rows 1 and 2
+        df = data.droplevel([1,2], axis=1)
+        STATE_DF_DICT[state_code] = df.copy()
+
+        # load config
+        config = pd.DataFrame(data.columns.tolist(), columns=["ID", "Text", "Category"])
+        STATE_CONFIG_DICT[state_code] = config.copy()
+        return True
+    else:
+        return False
 
 def get_state_df(state_code):
     """ 
+    state_code: string
     Returns the dataframe for a given state code and loads it if it is not 
     already loaded
     """
@@ -85,16 +142,15 @@ def get_state_df(state_code):
     if state_code in STATE_DF_DICT:
         return STATE_DF_DICT[state_code]
     
-    path = DATA_PATH + state_code + ".csv"
-    if os.path.isfile(path):
-        if state_code not in STATE_DF_DICT:
-            STATE_DF_DICT[state_code] = load_state_df(state_code)
+    # if the load is successful, return the dataframe
+    if _load_state_data(state_code):
         return STATE_DF_DICT[state_code]
     else:
         return None
     
 def get_config(state_code):
     """ 
+    state_code: string
     Returns the configuration for a given state code and loads it if it is not 
     already loaded
     """
@@ -104,51 +160,11 @@ def get_config(state_code):
     if state_code in STATE_CONFIG_DICT:
         return STATE_CONFIG_DICT[state_code]
     
-    path = DATA_PATH + state_code + ".csv"
-    if os.path.isfile(path):
-        if state_code not in STATE_CONFIG_DICT:
-            STATE_CONFIG_DICT[state_code] = load_config(state_code)
+    # if the load is successful, return the configuration
+    if _load_state_data(state_code):
         return STATE_CONFIG_DICT[state_code]
     else:
-        return None 
-
-def update_state_df(state_code):
-    """
-    Updates the dataframe for a given state code and loads it if it is not
-    already loaded
-    """
-    if state_code not in STATE_CODES:
         return None
-    
-    STATE_DF_DICT[state_code] = load_state_df(state_code)
-    return STATE_DF_DICT[state_code]
-    
-def update_config(state_code):
-    """
-    Updates the configuration for a given state code and loads it if it is not
-    already loaded
-    """
-    if state_code not in STATE_CODES:
-        return None
-    
-    STATE_CONFIG_DICT[state_code] = load_config(state_code)
-    return STATE_CONFIG_DICT[state_code]
-    
-def update_all_state_dfs():
-    """
-    Updates the dataframes for all states and loads them if they are not
-    already loaded
-    """
-    for state_code in STATE_CODES:
-        update_state_df(state_code)
-
-def update_all_configs():
-    """
-    Updates the configurations for all states and loads them if they are not
-    already loaded
-    """
-    for state_code in STATE_CODES:
-        update_config(state_code)
 
 #endregion
 
@@ -156,12 +172,13 @@ def update_all_configs():
 
 def get_hospital_df(state, hospital):
     """
+    state: state code
+    hospital: hospital url (lowercase name with no spaces and no non-alphanumeric characters)
     Returns the dataframe for a given state and hospital.
-    Takes into input the state code and the url form of the hospital name (lowercase 
-    without spaces and special characters).
     """
+    # check if the hospital exists for the given state
     if not valid_hospital(state, hospital):
-        print("Invalid hospital")
+        print("Invalid hospital: ", hospital, " for state: ", state)
         return None
     
     hospital = get_formatted_hospital(state, hospital)
@@ -180,83 +197,34 @@ def get_hospital_df(state, hospital):
 
 #endregion
 
-#region DATA FORMATTING AND PREPROCESSING
-
-def preprocess(df):
-    """ Preprocesses the dataframe """
-    df = df.copy()
-    add_year_month_column(df)
-    return df
-
-def date_to_year_month(date):
-    """
-    Convert date to YYYY-MM format
-    """
-    y = str(date.year)
-    m = str(date.month)
-    if (date.month < 10):
-        m = "0" + m
-    return f"{y}-{m}"
-
-def add_year_month_column(df):
-    """
-    Add a "Year-Month" column to the dataframe with the start date in the format
-    "YYYY-MM"
-    """
-    start_date_column = "StartDate"
-    
-    df[start_date_column] = df[start_date_column].apply(pd.to_datetime)
-    df["Year-Month"] = df[start_date_column].apply(date_to_year_month)
-
-#endregion
-
-#region UTILS
-
-def get_columns_of_type(state, type):
-    """
-    Returns a list of columns of a given type for a given state
-    """
-    config = get_config(state)
-    if config is None:
-        return None
-    return config[config["Type"] == type]["ID"].tolist()
-
-def get_type_of_column(state, column):
-    """
-    Returns the type of a given column for a given state
-    """
-    config = get_config(state)
-    if config is None:
-        return None
-    return config[config["ID"] == column]["Type"].values[0]
-
-def get_column_types(state):
-    """
-    Returns a dictionary of column types for a given state
-    """
-    config = get_config(state)
-    if config is None:
-        return None
-    return config["Type"].unique().tolist()
-
-#endregion
-
 #region VALIDITY CHECKS
 
-def valid_df_state(state):
+#TODO: Update this with proper data loading for deployment
+def valid_state(state):
     """ 
-    Returns True if the state has a valid dataframe, False otherwise.
-    Takes into input the state code.
+    state: state code
+    returns True if there is a file corresponding to the state code, False otherwise.
+    This function does not try to load the data, it only checks if the file exists, so errors
+    might still occur when trying to load the data.
     """
-    return get_state_df(state) is not None
+    if state in VALID_STATES:
+        return True
+    
+    # update valid states
+    files = os.listdir(DATA_PATH)
+    if f"{state}.xlsx" in files:
+        VALID_STATES.add(state)
+        return True
+
+    return False
 
 def valid_hospital(state, hospital):
-    """ 
-    Returns True if the hospital is valid for the given state, False otherwise.
-    Validity check based on state code and hospital url (lowecase name with
-    no spaces and no special characters).
     """
-    if not valid_df_state(state):
+    state: state code
+    hospital: hospital url (lowercase name with no spaces and no non-alphanumeric characters)
+    returns True if the hospital is valid for the given state, False otherwise.
+    """
+    if not valid_state(state):
         return False
     
     for h in get_hospitals_list(state):
@@ -271,28 +239,34 @@ def valid_hospital(state, hospital):
 def get_formatted_states_list():
     """ 
     Returns a list of all states with a non-empty df.
-    Each state is represented by a dictionary with keys "code" and "name" 
+    Each state is represented by a dictionary with keys "code" and "name".
+    (This is needed for proper formatting in the html template)
     """
     state_list = []
     for state in STATE_CODES:
-        if valid_df_state(state):
+        if valid_state(state):
             state_list.append({"code": state, "name": CODE_STATE_DICT[state]})
     return state_list
 
 def get_hospitals_list(state):
     """ 
+    state: state code
     Returns a list of all hospitals for a given state,
     including the option "All Hospitals".
-    Each hospital is represented by a dictionary with keys "allcaps", "name", and "url" 
+    Each hospital is represented by a dictionary with keys "allcaps", "name", and "url".
+    "allcaps" is the hospital name in all caps, "name" is the hospital name, and "url" is the
+    hospital url (lowercase with no spaces and no non-alphanumeric characters).
+    (This is needed for proper formatting in the html template)
     """
-    if not valid_df_state(state):
+    if not valid_state(state):
         return []
 
     df = get_state_df(state)
     
     all = "All Hospitals"
     site_column = "site_name"
-    if site_column is None:
+    if site_column not in df.columns:
+        WARNINGS.append(f"Column 'site_name' not found in data for state: {state}.")
         return format_hospitals([all])
     hospitals = df[site_column].unique().tolist()
     hospitals.insert(0, all)
@@ -305,8 +279,12 @@ def get_hospitals_list(state):
 
 def format_hospitals(hospitals):
     """
+    hospitals: list of hospital names
     Formats a list of hospitals into a list of dictionaries with keys "allcaps", 
-    "name", and "url"
+    "name", and "url".
+    "allcaps" is the hospital name in all caps, "name" is the hospital name, and "url" is the
+    hospital url (lowercase with no spaces and no non-alphanumeric characters).
+    (This is needed for proper formatting in the html template)
     """
     formatted_list = []
     for hospital in hospitals:
@@ -318,6 +296,8 @@ def format_hospitals(hospitals):
 
 def get_formatted_hospital(state, hospital_url):
     """
+    state: state code
+    hospital_url: hospital url (lowercase name with no spaces and no non-alphanumeric characters)
     Returns the formatted hospital dictionary for a given state and hospital url.
     The state is necessary to check that the hospital is valid.
     """
