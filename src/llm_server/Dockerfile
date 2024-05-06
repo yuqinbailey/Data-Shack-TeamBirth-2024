@@ -11,7 +11,10 @@ COPY . /app
 
 # Install the required dependencies
 COPY requirements.txt .
-RUN apt update && apt install -y python pip && pip install --no-cache-dir -r requirements.txt
+RUN apt update && \
+    apt install -y python pip && \
+    apt-get install -y python3 python3-pip vim && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Specify the command to run on container start
 CMD ["uvicorn", "llm_service:app", "--host", "0.0.0.0", "--port", "8000"]
