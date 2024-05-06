@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatBot</title>
-    <link rel="stylesheet" href="/static/stylec.css">
+    <link rel="stylesheet" href="../../../static/stylec.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.typekit.net/eso4tvc.css">
 </head>
@@ -13,7 +13,7 @@
         <div class="row" id="row2">
             <div class="col-md-2 menu">
                 <a onclick="window.location.href='/{{state}}/{{hospital.url}}'">
-                    <img src="/static/resources/dashbirth_logo.svg" alt="Dashbirth Logo" class="logo">
+                    <img src="../../../static/resources/dashbirth_logo.svg" alt="Dashbirth Logo" class="logo">
                 </a>
                 <div class="menu-buttons">
                     <button class="btn-menu" onclick="window.location.href='/{{state}}/{{hospital.url}}'">Home</button>
@@ -29,13 +29,13 @@
                     <div class="chat-location">{{hospital.name}}, {{state}}</div>
                     </div>
                     <div class="chat-header">
-                    <img src="/static/resources/chatbot2.svg" alt="Chatbot Logo" class="chat-logo">
+                    <img src="../../../static/resources/chatbot2.svg" alt="Chatbot Logo" class="chat-logo">
                 </div>
                 <div id="chat-container">
                     <div id="conversation"></div>
                     <div class="input-area">
                         <input type="text" id="message-input" placeholder="How can I help you today?">
-                        <button type="button" id="send-button" onclick="sendMessage()"><img src="/static/resources/arrow.svg" alt="arrow" class="arrow"></button></div></input>
+                        <button type="button" id="send-button" onclick="sendMessage()"><img src="../../../static/resources/arrow.svg" alt="arrow" class="arrow"></button></div></input>
                     </div>
                 </div>
             </div>
@@ -45,6 +45,6 @@
         var state_code = "{{ state }}";
         var hospital_url = "{{ hospital.url }}";    
     </script>
-    <script src="/static/scriptc.js"></script>
+    <script src="../../../static/scriptc.js"></script>
 </body>
 </html>

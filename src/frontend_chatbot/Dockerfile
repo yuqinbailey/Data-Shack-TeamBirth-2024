@@ -1,20 +1,31 @@
-# Use the official Nginx image as a parent image
-FROM nginx:alpine
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# Remove the default nginx index page
-RUN rm -rf /usr/share/nginx/html/*
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
-# Copy the static assets
-COPY ./static /usr/share/nginx/html/static
+# Copy the current directory contents into the container at /usr/src/app
+COPY . .
 
-# Copy the templates
-COPY ./templates /usr/share/nginx/html
+# Install any needed packages specified in requirements.txt
+RUN apt-get update && apt-get install -y \
+    build-essential 
+    # python3-dev && \
+    # pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the custom Nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
+# Install the spaCy English model
+RUN pip install spacy && \
+    python -m spacy download en_core_web_sm
 
-# Expose port 80
-EXPOSE 80
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
 
-# Start Nginx when the container has provisioned.
-CMD ["nginx", "-g", "daemon off;"]
+# Define environment variable
+ENV FLASK_APP=app.py
+# ENV FLASK_RUN_HOST=0.0.0.0
+ENV DATA_DIR=/data
+
+# Run app.py when the container launches
+# CMD ["flask", "run"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
