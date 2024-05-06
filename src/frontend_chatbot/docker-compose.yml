@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile_dev
+    ports:
+      - "80:80"
+    depends_on:
+      - llm
+
+  llm:
+    image: us-east1-docker.pkg.dev/team-birth-2024/teambirth/teambirth-llm-server-new
+    ports:
+      - "8000:8000"

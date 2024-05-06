@@ -58,3 +58,22 @@ def generate_answer(q):
     return answer
 
 print(generate_answer("Tell me something about the machine learning!"))
+
+# Init FastAPI
+app = FastAPI(title="API Server", description="API Server", version="v1")
+
+@app.get("/")
+def read_root():
+    return {"status": "LLM Service Running"}
+
+class QuestionPayload(BaseModel):
+    question: str
+
+@app.post("/generate")
+def generate_response(query: QuestionPayload):
+    try:
+        return generate_answer(query.question)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    

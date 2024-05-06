@@ -1,0 +1,20 @@
+# Use the official NGINX image as the base
+FROM nginx:alpine
+
+# Remove the default nginx static assets
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy the static assets
+COPY ./static /usr/share/nginx/html/static
+
+# Copy the templates
+COPY ./templates /usr/share/nginx/html
+
+# Replace the default NGINX configuration file with our custom file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80 for HTTP traffic
+EXPOSE 80
+
+# Start NGINX
+CMD ["nginx", "-g", "daemon off;"]

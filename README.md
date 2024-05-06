@@ -41,6 +41,8 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
 * Have Docker installed
 
 ### Frontend Simple Container
+* Store & config your data files in `</absolute/path/to/your/data>` following the [instructions](src/frontend_simple/README.md)
+
 * Build & run container by running the commands with the absolute path to your data folder
     ```
     cd src/frontend_simple
@@ -48,13 +50,42 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
     docker build -t frontend_simple -f Dockerfile .
     docker run -d -p 5001:5000 -v </absolute/path/to/your/data>:/data frontend_simple
     ```
-- Go to page `http://localhost:5001/`
+* Go to page `http://localhost:5001/`
 
 
 ---
 <img src="images/Technical_Arch.jpg"  width="800">
 
+**GCS Buckets**
+```
+  ├── data_ma
+  ├── data_nj
+  ├── data_ok
+  └── data_wa 
+```
+
+### Local Secrets Folder
+Create a local `src/secrets` folder because we do not include any secure information in Git. Rename and add the GCP service account private key, `data-server-account.json`, to this folder.
+
 ### Vector Database Container
+The Vector DB container is designed to handle vector embeddings for different states, processing data from designated GCS buckets.
+
+`generate_embeddings.py` - This script contains the primary logic for generating vector embeddings from data files.
+* --name (-n): Flag specifies the name of the GCS bucket from which the script should retrieve data. Default is set to WA.
+* --clean_up (-c): Flag controls whether the script should clean up (delete) the local metadata directories after processing is complete.
+
+1. Navigate to Vector DB directory
+    ```
+    cd src/vec_db
+    ```
+
+2. Config the `Dockerfile` for state selection: Modify the last CMD line to pass the --name flag. For example, replace `CMD ["data_wa"]` with `CMD ["data_nj"]` for NJ state, or `CMD ["data_nj", "-c", "False"]` to preserve metadata.
+
+3. Build & run container
+    ```
+    ./docker-shell.sh
+    ```
+
 
 ### Retrival Container
 
@@ -62,49 +93,77 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
 This container is configured to serve a Large Language Model (LLM), specifically Llama2-7B-chat, on a Google Cloud Platform (GCP) Virtual Machine (VM). We opted to deploy the LLM in a cloud environment to address data privacy concerns and because hosting it locally is challenging. The model requires 15GB of memory and a T4 GPU to function optimally. Below, you will find instructions on how to set up a similar server on your own.
 
 1. Build Docker Image
-Assuming you have a Dockerfile in your project directory, navigate to that directory in your terminal and run the following command to build the Docker image:
-* docker build -t <image_name> .
-Replace <image_name> with the desired name for your Docker image.
+
+    Navigate to LLM directory in your terminal and run the following command to build the Docker image:
+    ```
+    cd src/llm_server
+
+    docker build -t teambirth-llm-server .
+    ```
 
 2. Tag the Docker Image
-After the build is complete, tag your Docker image with the Google Cloud Registry path:
-* docker tag <image_name> gcr.io/<project_id>/<image_name>
-Replace <project_id> with your Google Cloud project ID and <image_name> with the same name you used in the previous step.
+
+    After the build is complete, tag your Docker image with the Google Cloud Registry path:
+    ```
+    docker tag teambirth-llm-server gcr.io/<project_id>/teambirth-llm-server
+    ```
+    Replace `<project_id>` with your Google Cloud project ID.
 
 3. Authenticate Docker to GCR
-Authenticate Docker to the Google Cloud Registry using the following command:
-* gcloud auth configure-docker
+
+    Authenticate Docker to the Google Cloud Registry using the following command:
+    ```
+    gcloud auth configure-docker
+    ```
 
 4. Push Docker Image to GCR
-Push the Docker image to the Google Cloud Registry:
-* docker push gcr.io/<project_id>/<image_name>
+
+    Push the Docker image to the Google Cloud Registry:
+    ```
+    docker push gcr.io/<project_id>/teambirth-llm-server
+    ```
 
 5. Create a Google Cloud VM
-Navigate to the Google Cloud Console and create a new Virtual Machine instance. Make sure to select the appropriate region, machine type, and other settings according to your requirements.
-e.g. Region: us-east1, Zone: us-east1-c, GPU type: NVIDIA T4, Machine Type: n1-standard-4 (4 vCPU, 2 core, 15 GB memory), VM provisioning model: Spot (Save you some money but loss some stability)
+
+    Navigate to the Google Cloud Console and create a new Virtual Machine instance. Make sure to select the appropriate region, machine type, and other settings according to your requirements.
+    
+    e.g. Region: us-east1, Zone: us-east1-c, GPU type: NVIDIA T4, Machine Type: n1-standard-4 (4 vCPU, 2 core, 15 GB memory), VM provisioning model: Spot (Save you some money but loss some stability)
 
 6. Install Docker on the VM
-SSH into your VM and install Docker:
-* sudo apt-get update
-* sudo apt-get install docker.io
+
+    SSH **into your VM** and install Docker:
+    ```
+    sudo apt-get update
+    sudo apt-get install docker.io
+    ```
 
 7. Pull Docker Image from GCR
-Pull the Docker image from the Google Cloud Registry to your VM:
-* docker pull gcr.io/<project_id>/<image_name>
-Now, you need to add other packages and drivers to communicate with the GPUs.
+
+    Pull the Docker image from the Google Cloud Registry to your VM:
+    ```
+    docker pull gcr.io/<project_id>/teambirth-llm-server
+    ```
+    Now, you need to add other packages and drivers to communicate with the GPUs.
 
 8. Install GPU drivers on VM
-Follow the intstruction in the Google Cloud website: https://cloud.google.com/compute/docs/gpus/install-drivers-gpu to install GPU drivers on the VM. You cannot use your GPUs without the driver. Verify the GPU driver install by this command:
-* sudo nvidia-smi
+    
+    Follow the intstruction in the Google Cloud website: https://cloud.google.com/compute/docs/gpus/install-drivers-gpu to install GPU drivers on the VM. You cannot use your GPUs without the driver. Verify the GPU driver install by this command:
+    ```
+    sudo nvidia-smi
+    ```
 
 9. Download the NVIDIA CUDA Toolkit
-Follow the instruction in the NVIDIA website to download the NVIDIA CUDA Toolkit (section 2.7) https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
+
+    Follow the instruction in the NVIDIA website to download the NVIDIA CUDA Toolkit (section 2.7) https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
 
 
 10. Run Docker Container on VM
-Finally, run the Docker container on your VM:
-* docker run -d -p <host_port>:<container_port> <image_name>
-Replace <host_port> and <container_port> with the ports you want to expose on the host and container, respectively.
+
+    Finally, run the Docker container on your VM:
+    ```
+    docker run -d -p <host_port>:<container_port> gcr.io/<project_id>/teambirth-llm-server
+    ```
+    Replace <host_port> and <container_port> with the ports you want to expose on the host and container, respectively.
 
 
 ### API Service Container
