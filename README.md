@@ -56,7 +56,36 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
 ---
 <img src="images/Technical_Arch.jpg"  width="800">
 
+**GCS Buckets**
+```
+  ├── data_ma
+  ├── data_nj
+  ├── data_ok
+  └── data_wa 
+```
+
+### Local Secrets Folder
+Create a local `src/secrets` folder because we do not include any secure information in Git. Rename and add the GCP service account private key, `data-server-account.json`, to this folder.
+
 ### Vector Database Container
+The Vector DB container is designed to handle vector embeddings for different states, processing data from designated GCS buckets.
+
+`generate_embeddings.py` - This script contains the primary logic for generating vector embeddings from data files.
+* --name (-n): Flag specifies the name of the GCS bucket from which the script should retrieve data. Default is set to WA.
+* --clean_up (-c): Flag controls whether the script should clean up (delete) the local metadata directories after processing is complete.
+
+1. Navigate to Vector DB directory
+    ```
+    cd src/vec_db
+    ```
+
+2. Config the `Dockerfile` for state selection: Modify the last CMD line to pass the --name flag. For example, replace `CMD ["data_wa"]` with `CMD ["data_nj"]` for NJ state, or `CMD ["data_nj", "-c", "False"]` to preserve metadata.
+
+3. Build & run container
+    ```
+    ./docker-shell.sh
+    ```
+
 
 ### Retrival Container
 
@@ -67,6 +96,8 @@ This container is configured to serve a Large Language Model (LLM), specifically
 
     Navigate to LLM directory in your terminal and run the following command to build the Docker image:
     ```
+    cd src/llm_server
+
     docker build -t teambirth-llm-server .
     ```
 
