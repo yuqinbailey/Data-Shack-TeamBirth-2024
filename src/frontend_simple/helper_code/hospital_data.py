@@ -106,12 +106,6 @@ sentiment_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 import helper_code.data_loader as dl
 import helper_code.multiplechoice_const as mc
 
-
-# TODO
-# - anonymize questions with float dtype
-# - add stemmed word counts? (not sure if it is useful)
-# - fix anonymisation (only group under other answers with < MIN_K occurrences)
-
 # K-anonymity parameter
 # If a value occurs less than MIN_K times, it is replaced with "Other"
 # (Only applied to demographics questions)

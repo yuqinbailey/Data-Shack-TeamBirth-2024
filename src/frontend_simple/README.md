@@ -37,7 +37,7 @@ The first 3 rows of the file should be structured as following:
 
 Questions whose ID ends in **"_TEXT"** will be deleted unless they are marked as open feedback or one of the unique categories (e.g. huddle, age, education,...). This is because these questions are a part of a different question, which could generate errors or unexpected behaviour. For questions whose answer is entirely in the _TEXT field (e.g. "How long was your labour?"), we recommend marking the main question as info so that it will be deleted and changing the ID of the text so that it does not end exactly in "_TEXT" (any unique ID will be okay).
 
-E.g. Q10 is the question "How long was your labour?"; the answers are either "Prefer not to answer" or "Write the number of hours here:", while Q10_1_TEXT contains the numerical value for the answer or an empty cell for "Prefer not to answer". In this case, mark the category of Q10 as "info" and change the ID for Q10_1_TEXT to Q_10_1 (or any other ID that is not already taken). Then only the numerical value will be taken into consideration, and cells will be automatically filled in with "Prefer not to answer".
+E.g. Q10 is the question "How long was your labour?"; the answers are either "Prefer not to answer" or "Write the number of hours here:", while Q10_1_TEXT contains the numerical value for the answer or an empty cell for "Prefer not to answer". In this case, mark the category of Q10 as "info" and change the ID for Q10_1_TEXT to Q_10_1 (or any other ID that is not already taken). Then only the numerical value will be taken into consideration, and empty cells will be automatically filled in with "Prefer not to answer".
 
 ## Data elaboration
 
