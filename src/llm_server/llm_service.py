@@ -3,7 +3,7 @@ from google.cloud import storage
 from fastapi import FastAPI, HTTPException
 from langchain_community.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceInstructEmbeddings
-
+from pydantic import BaseModel
 import torch
 from transformers import AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer, pipeline
 
@@ -57,7 +57,7 @@ def generate_answer(q):
     answer = result[0]['generated_text'][len(prompt):].strip()
     return answer
 
-print(generate_answer("Tell me something about the machine learning!"))
+#print(generate_answer("Tell me something about the machine learning!"))
 
 # Init FastAPI
 app = FastAPI(title="API Server", description="API Server", version="v1")
