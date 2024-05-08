@@ -36,7 +36,7 @@ import os
 
 #region CONSTANTS
 
-DATA_PATH = os.getenv('DATA_DIR')
+DATA_PATH = '/data/'
 
 STATE_CODES = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", 
                "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", 

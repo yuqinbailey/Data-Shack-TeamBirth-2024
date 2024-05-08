@@ -97,7 +97,7 @@ def chatbot_response(state, hospital):
     user_message = data.get('message', '')
 
     # TODO: URL of the LLM service endpoint
-    llm_url = "http://llm-container:8000/generate"
+    llm_url = "http://34.75.42.35:8000/generate"
 
     try:
         # Prepare the payload for the LLM container

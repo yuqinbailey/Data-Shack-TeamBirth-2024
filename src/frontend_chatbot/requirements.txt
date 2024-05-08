@@ -4,3 +4,4 @@ flask
 spacy
 nltk
 termcolor
+openpyxl
