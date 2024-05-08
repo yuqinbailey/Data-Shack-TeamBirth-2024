@@ -54,7 +54,7 @@ An interactive dashboard website that TeamBirth can use in order to visualize th
 
 
 ---
-<img src="images/Technical_Arch.jpg"  width="800">
+<img src="images/Technical_Arch_Final.jpg"  width="800">
 
 **GCS Buckets**
 ```
@@ -86,6 +86,13 @@ The Vector DB container is designed to handle vector embeddings for different st
     ./docker-shell.sh
     ```
 
+### Frontend Chatbot Container
+* Change 
+
+* Build & run container
+    ```
+    docker-compose build
+    ```
 
 ### Retrival Container
 
@@ -165,8 +172,6 @@ This container is configured to serve a Large Language Model (LLM), specifically
     ```
     Replace <host_port> and <container_port> with the ports you want to expose on the host and container, respectively.
 
-
-### API Service Container
 
 
 ## Docker Cleanup
