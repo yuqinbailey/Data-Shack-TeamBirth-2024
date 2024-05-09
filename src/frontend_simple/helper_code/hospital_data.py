@@ -26,6 +26,7 @@ Preprocessing steps:
     categories (see ONE_COLUMN_CATEGORIES)
     - delete columns that do not appear in the configuration
     - check that all ONE_COLUMN_CATEGORIES are present and add an error if they are not
+    - remove columns with unallowed categories and add a warning if there are any
 - date preprocessing:
     - convert the date to datetime format
     - add a column "Year-Month" with the date in the format "YYYY-MM" (this column is also added
@@ -111,7 +112,9 @@ import helper_code.multiplechoice_const as mc
 # (Only applied to demographics questions)
 MIN_K = 5
 ONE_COLUMN_CATEGORIES = ["huddle", "age", "insurance", "race", "education", "date", "site_name"]
-
+ALLOWED_CATEGORIES = ["date", "info", "preference", "open_feedback", "huddle", "age", "insurance", 
+                      "race", "education", "site_name", "Year-Month", "trust", "hospital_xp",
+                      "demographics"]
 
 
 class HospitalData:
@@ -218,6 +221,7 @@ class HospitalData:
         one column categories
         - check that df columns match the configuration and delete not-matching columns
         - check that all one column categories are present
+        - remove columns with unallowed categories and add a warning if there are any
         """
 
         # Remove columns marked as "info"
@@ -262,6 +266,14 @@ class HospitalData:
         for category in ONE_COLUMN_CATEGORIES:
             if category not in categories:
                 self.errors.append(f"Missing question category: {category}.")
+        
+        # Remove columns with unallowed categories
+        for q_id in self.df.columns:
+            category = self.config.get_category_of_column(q_id)
+            if category not in ALLOWED_CATEGORIES:
+                self.warnings.append(f"Unallowed category for question {q_id}: {category}. The question will be deleted.")
+                self.df = self.df.drop(columns=q_id)
+                self.config.remove_columns([q_id])
 
     def _preprocess_date(self):
         """
@@ -621,7 +633,43 @@ class HospitalData:
         word_counts = self.get_word_counts()
         return word_counts.get(word, 0)
 
-    def get_feedbacks_with_word(self, word):
+    def search_feedback(self, input, all_words=False):
+        """
+        input: string to search for (string)
+        all_words: if True, returns only feedbacks that contain all words in the list;
+        if False, returns feedbacks that contain any of the words in the list
+        Returns the feedbacks that contain the words in the list.
+        Returns a dataframe with one column "Feedback".
+        This function uses stemming: feedbacks that contain words that get stemmed to the same word
+        as the given words are returned.
+        """
+        if self.feedback is None:
+            self.get_feedback()
+        if self.stemmed_feedback is None:
+            self._get_stemmed_feedback()
+        
+        # remove punctuation from input
+        input = re.sub(r'[^\w\s]', '', input)
+        words = input.split()
+
+        if len(words) == 0:
+            return None
+
+        if not all_words:
+            feedbacks = set()
+            for w in words:
+                feedbacks.update(self._get_feedbacks_with_word(w)["Feedback"].tolist())
+            return pd.DataFrame({"Feedback": list(feedbacks)})
+        else:
+            feedbacks = self.feedback.copy()
+            feedbacks = feedbacks["Feedback"].tolist()
+            feedbacks = set(feedbacks)
+            for w in words:
+                f = self._get_feedbacks_with_word(w)["Feedback"].tolist()
+                feedbacks = feedbacks.intersection(set(f))
+            return pd.DataFrame({"Feedback": list(feedbacks)})
+
+    def _get_feedbacks_with_word(self, word):
         """
         word: the word to search for (string)
         Returns the feedbacks that contain the stem of the word.
@@ -677,6 +725,12 @@ class HospitalData:
         ordered_by: "Positive", "Neutral" or "Negative". Default is "Positive".
         Returns the feedback ordered by sentiment score.
         """
+        if ordered_by in ["pos", "positive"]:
+            ordered_by = "Positive"
+        elif ordered_by in ["neu", "neutral"]:
+            ordered_by = "Neutral"
+        elif ordered_by in ["neg", "negative"]:
+            ordered_by = "Negative"
         if ordered_by not in ["Positive", "Neutral", "Negative"]:
             return None
         

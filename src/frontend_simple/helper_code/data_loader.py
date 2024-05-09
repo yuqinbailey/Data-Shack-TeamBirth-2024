@@ -66,15 +66,22 @@ STATE_DF_DICT = {}
 STATE_CONFIG_DICT = {}
 VALID_STATES = set()
 WARNINGS = []
+STATE_WARNINGS = {}
 
 #region WARNINGS
 
-def get_warnings():
+def get_warnings(state=None):
     """ 
     Returns a list of warnings for the user.
     """
-    update_warnings()
-    return WARNINGS
+    if state is None:
+        update_warnings()
+        return WARNINGS
+    else:
+        if state in STATE_WARNINGS:
+            return STATE_WARNINGS[state]
+        else:
+            return []
 
 #TODO: Update this with proper data loading for deployment
 def update_warnings():
@@ -266,7 +273,9 @@ def get_hospitals_list(state):
     all = "All Hospitals"
     site_column = "site_name"
     if site_column not in df.columns:
-        WARNINGS.append(f"Column 'site_name' not found in data for state: {state}.")
+        if state not in STATE_WARNINGS:
+            STATE_WARNINGS[state] = []
+        STATE_WARNINGS[state].append(f"Column 'site_name' not found in data for state: {state}. Only 'All Hospitals' available.")
         return format_hospitals([all])
     hospitals = df[site_column].unique().tolist()
     hospitals.insert(0, all)

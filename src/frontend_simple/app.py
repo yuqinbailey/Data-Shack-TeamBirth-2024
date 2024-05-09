@@ -28,6 +28,10 @@ def index():
 def select_hospital(state):
     if dl.valid_state(state):
         hospitals = dl.get_hospitals_list(state)
+        warnings = dl.get_warnings(state=state)
+        if len(warnings) > 0:
+            for warning in warnings:
+                print(colored("WARNING: " + warning, 'yellow'))
         return render_template(SELECT_HOSPITAL_PAGE, state=state, hospitals=hospitals)
     
     print("Invalid state: ", state)
